@@ -36,13 +36,13 @@ def get_words_content(df):
     occurrences_sorted = sorted(occurrences.items(), key=operator.itemgetter(1))
     print(occurrences_sorted)
 
-    a_file = open("data.json", "w")
+    a_file = open("data_content.json", "w")
     json.dump(occurrences_sorted, a_file)
     a_file.close()
 
 
 if __name__ == '__main__':
-    data = pandas.read_csv("data2.csv", sep=',', low_memory=False)
+    data = pandas.read_csv("data.csv", sep=',', low_memory=False)
     data.fillna(" ", inplace=True)  # Replace the null value by a space
     df = pandas.DataFrame(data);
-    # get_words_content(df)
+    get_words_content(df)
