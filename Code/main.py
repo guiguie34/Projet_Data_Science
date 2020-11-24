@@ -2,7 +2,18 @@
 import pandas
 import operator
 import json
+import csv
+import sys
+maxInt = sys.maxsize
 
+while True:
+    # decrease the maxInt value by factor 10
+    # as long as the OverflowError occurs.
+    try:
+        csv.field_size_limit(maxInt)
+        break
+    except OverflowError:
+        maxInt = int(maxInt / 10)
 
 def modification_texte(message):
     ponctuation = [",", ";", ":", ".", "?", "!", "«", "»", "(", ")", "\"", "…", "'", "-", "’"]
@@ -57,9 +68,26 @@ def get_words_subject(df):
     json.dump(occurrences_sorted, a_file)
     a_file.close()
 
+def csv_to_json(data):
+    jsonfile = open('file.json', 'w')
+    reader = csv.reader(data)
+    fieldnames = []
+    for row in reader:
+        fieldnames.append(row[0])
+    fieldnames = fieldnames[0:15]
+    csvfile = open('../Sources/data.csv', 'r')
+    reader2 = csv.DictReader(csvfile, fieldnames)
+    next(reader2)
+    next(reader2)
+
+    for row in reader2:
+        # print(row)
+        json.dump(row, jsonfile)
+        jsonfile.write('\n')
 
 if __name__ == '__main__':
     data = pandas.read_csv("../Sources/data.csv", sep=',', low_memory=False)
-    data.fillna("NoData", inplace=True)  # Replace the null value by a space
-    df = pandas.DataFrame(data);
-    get_words_subject(df)
+    #data.fillna("NoData", inplace=True)  # Replace the null value by a space
+    # df = pandas.DataFrame(data)
+    # get_words_subject(df)
+    csv_to_json(data)
