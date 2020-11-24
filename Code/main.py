@@ -1,11 +1,12 @@
 import string
-
 import pandas
 import operator
 import json
 import csv
 import sys
-maxInt = sys.maxsize
+
+
+'''maxInt = sys.maxsize
 
 while True:
     # decrease the maxInt value by factor 10
@@ -15,6 +16,8 @@ while True:
         break
     except OverflowError:
         maxInt = int(maxInt / 10)
+'''
+
 
 def modification_texte(message):
     ponctuation = [",", ";", ":", ".", "?", "!", "«", "»", "(", ")", "\"", "…", "'", "-", "’"]
@@ -70,8 +73,9 @@ def get_words_subject(df):
     json.dump(occurrences_sorted, a_file)
     a_file.close()
 
+
 def csv_to_json(data):
-    jsonfile = open('file.json', 'w')
+    jsonfile = open('../Generated Data/data.json', 'w')
     reader = csv.reader(data)
     fieldnames = []
     for row in reader:
@@ -87,9 +91,11 @@ def csv_to_json(data):
         json.dump(row, jsonfile)
         jsonfile.write('\n')
 
+
 if __name__ == '__main__':
-    data = pandas.read_csv("../Sources/data.csv", sep=',', low_memory=False)
-    #data.fillna("NoData", inplace=True)  # Replace the null value by a space
-    # df = pandas.DataFrame(data)
-    # get_words_subject(df)
-    csv_to_json(data)
+    data = pandas.read_csv("../Sources/data_clean.csv", sep=',', low_memory=False)
+    # data.fillna("NoData", inplace=True)  # Replace the null value by a string "NoData"
+    df = pandas.DataFrame(data)
+    # df.to_csv("../Generated Data/data_clean.csv", index=False)
+    get_words_subject(df)
+
