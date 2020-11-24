@@ -1,3 +1,4 @@
+import string
 
 import pandas
 import operator
@@ -6,10 +7,11 @@ import json
 
 def modification_texte(message):
     ponctuation = [",", ";", ":", ".", "?", "!", "«", "»", "(", ")", "\"", "…", "'", "-", "’"]
+    alphabet= list(string.ascii_uppercase) + list(string.ascii_lowercase)
     message2 = ""
     for c in message:
-        if (c in ponctuation) or (c == "\n"):
-            message2 += ""
+        if (c not in alphabet) or (c == "\n"):
+            message2 += " "
         else:
             message2 += c
     return message2
