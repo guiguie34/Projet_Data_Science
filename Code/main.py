@@ -4,6 +4,7 @@ import operator
 import json
 import csv
 import sys
+from datetime import datetime
 
 
 '''maxInt = sys.maxsize
@@ -91,11 +92,33 @@ def csv_to_json(data):
         json.dump(row, jsonfile)
         jsonfile.write('\n')
 
+def get_all_mails(df,subject):
+    mails=[]
+    for i in range(0,len(df.index)):
+        if(subject in df['Subject'][i]):
+            tmp={}
+            tmp['Date']=df['Date'][i]
+            tmp['From']=df['From'][i]
+            tmp['To']=df['To'][i]
+            tmp['Subject']=df['Subject'][i]
+            tmp['content']=df['content'][i]
+            tmp['user']=df['user'][i]
+            mails.append(tmp)
+    #print(mails)
+    return mails
+
 
 if __name__ == '__main__':
     data = pandas.read_csv("../Sources/data_clean.csv", sep=',', low_memory=False)
-    # data.fillna("NoData", inplace=True)  # Replace the null value by a string "NoData"
+    #data.fillna("NoData", inplace=True)  # Replace the null value by a string "NoData"
     df = pandas.DataFrame(data)
-    # df.to_csv("../Generated Data/data_clean.csv", index=False)
-    get_words_subject(df)
+    #df.to_csv("../Sources/data_clean.csv", index=False)
+    #get_words_subject(df)
+    mails=get_all_mails(df,"Resumes")
+    for i in range(0, len(mails)):
+        mails[i]['Date']=int(datetime.fromisoformat(mails[i]["Date"]).timestamp())
+    mails=sorted(mails,key=lambda i:i['Date'])
+
+    for i in range(0,len(mails)):
+        print(mails[i].get('Date'))
 
