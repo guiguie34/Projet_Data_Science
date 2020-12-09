@@ -112,9 +112,9 @@ def get_all_mails(df, subject):
     return mails
 
 
-# TODO Objet --> Resortir les mails qui ont exactement le même sujet.
-# enlever les RE, et check
-#
+# TODO Objet --> Calculer le temps de réponse par rapport aux mails récupérés
+# TODO Thématique --> Déterminier une thématique par rapport aux mots présent dans le mails (enlever stop words)
+# TODO FilterData --> Trouver les mails avec des réponses que l'on peut exploiter
 
 if __name__ == '__main__':
     data = pandas.read_csv("../Sources/data_clean.csv", sep=',', low_memory=False)
