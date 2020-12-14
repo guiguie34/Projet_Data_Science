@@ -1,4 +1,6 @@
 import string
+
+import nltk
 import pandas
 import operator
 import json
@@ -6,6 +8,8 @@ import csv
 import sys
 from datetime import datetime
 import re
+from nltk.corpus import stopwords
+from nltk.stem import PorterStemmer
 
 '''maxInt = sys.maxsize
 
@@ -32,8 +36,18 @@ def modification_texte(message):
     return message2
 
 
+def modification_ntlk(message):
+    stop_words = stopwords.words('english') + [",", ";", ":", ".", "?", "!", "«", "»", "(", ")", "\"", "…", "'", "-", "’","--","<",">",]
+    tokenizer = nltk.RegexpTokenizer(r"\w+") #regexp des ponctuations
+    message_split = tokenizer.tokenize(message) # Separe le message en tableau de message sans les pontcuations
+    #message_split = nltk.word_tokenize(message)
+    stemming = PorterStemmer()
+    stemmed_list = [stemming.stem(word) for word in message_split] #rassamble les mots qui sont similaire
+    meaningful_words = [w for w in stemmed_list if not w.lower() in stop_words]
+    return meaningful_words
+
+
 def nb_occ(message, occurrences):
-    message = message.split(' ')
     for c in message:
         occurrences[c] = occurrences.get(c, 0) + 1
 
@@ -46,9 +60,9 @@ def get_words_content(df):
     occurrences = {}
     for i in range(0, number_of_rows):
         courant = df['content'][i]
-        courant = modification_texte(courant)
+        courant = modification_ntlk(courant)
         occurrences = nb_occ(courant, occurrences)
-        print(i)
+        #print(i)
     occurrences_sorted = sorted(occurrences.items(), key=operator.itemgetter(1))
     print(occurrences_sorted)
 
@@ -63,7 +77,7 @@ def get_words_subject(df):
     occurrences = {}
     for i in range(0, number_of_rows):
         courant = df['Subject'][i]
-        courant = modification_texte(courant)
+        courant = modification_ntlk(courant)
         occurrences = nb_occ(courant, occurrences)
         print(i)
     occurrences_sorted = sorted(occurrences.items(), key=operator.itemgetter(1))
@@ -121,14 +135,18 @@ if __name__ == '__main__':
     # data.fillna("NoData", inplace=True)  # Replace the null value by a string "NoData"
     df = pandas.DataFrame(data)
     # df.to_csv("../Sources/data_clean.csv", index=False)
-    # get_words_subject(df)
+    nltk.download('stopwords')
+    nltk.download('punkt')
+    print(modification_ntlk("Nick frightened, likes, to > frightens play football, <however -- he - is : / not too frightening fond of tennis."))
+    #get_words_subject(df)
+    #stop_words = stopwords.words('english') + [",", ";", ":", ".", "?", "!", "«", "»", "(", ")", "\"", "…", "'", "-", "’"]
+    #get_words_content(df)
+    #df = df.drop_duplicates(subset=["Date", "From", "To", "content"], keep="last", ignore_index=True)
 
-    df = df.drop_duplicates(subset=["Date", "From", "To", "content"], keep="last", ignore_index=True)
-
-    mails = get_all_mails(df, "California Update 5/4/01")
-    for i in range(0, len(mails)):
-        mails[i]['Date'] = int(datetime.fromisoformat(mails[i]["Date"]).timestamp())
-    mails = sorted(mails, key=lambda i: i['Date'])
-
-    for i in range(0, len(mails)):
-        print(mails[i])
+    # mails = get_all_mails(df, "California Update 5/4/01")
+    # for i in range(0, len(mails)):
+    #     mails[i]['Date'] = int(datetime.fromisoformat(mails[i]["Date"]).timestamp())
+    # mails = sorted(mails, key=lambda i: i['Date'])
+    #
+    # for i in range(0, len(mails)):
+    #     print(mails[i])
