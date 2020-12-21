@@ -10,6 +10,10 @@ from datetime import datetime
 import re
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
+from nltk.corpus import wordnet  # Import wordnet from the NLTK
+from Code.utils_mail import link_mail
+
+nltk.download('wordnet')
 
 '''maxInt = sys.maxsize
 
@@ -106,24 +110,7 @@ def csv_to_json(data):
         jsonfile.write('\n')
 
 
-def get_all_mails(df, subject):
-    mails = []
-    mailREGEX = "(Re|RE|FW) *([:] *)| *$"
-    for i in range(0, len(df.index)):
 
-        if (subject in df['Subject'][i]):
-            newSubject = re.sub(mailREGEX, "", df['Subject'][i])
-            print(df['Subject'][i], " ", newSubject)
-            if (newSubject in subject ):
-                tmp = {}
-                tmp['Date'] = df['Date'][i]
-                tmp['From'] = df['From'][i]
-                tmp['To'] = df['To'][i]
-                tmp['Subject'] = df['Subject'][i]
-                tmp['content'] = df['content'][i]
-                tmp['user'] = df['user'][i]
-                mails.append(tmp)
-    return mails
 
 
 # TODO Objet --> Calculer le temps de réponse par rapport aux mails récupérés
@@ -135,18 +122,27 @@ if __name__ == '__main__':
     # data.fillna("NoData", inplace=True)  # Replace the null value by a string "NoData"
     df = pandas.DataFrame(data)
     # df.to_csv("../Sources/data_clean.csv", index=False)
-    nltk.download('stopwords')
-    nltk.download('punkt')
-    print(modification_ntlk("Nick frightened, likes, to > frightens play football, <however -- he - is : / not too frightening fond of tennis."))
+    #nltk.download('stopwords')
+    #nltk.download('punkt')
+    #print(modification_ntlk("Nick frightened, likes, to > frightens play football, <however -- he - is : / not too frightening fond of tennis."))
     #get_words_subject(df)
     #stop_words = stopwords.words('english') + [",", ";", ":", ".", "?", "!", "«", "»", "(", ")", "\"", "…", "'", "-", "’"]
     #get_words_content(df)
     #df = df.drop_duplicates(subset=["Date", "From", "To", "content"], keep="last", ignore_index=True)
 
-    # mails = get_all_mails(df, "California Update 5/4/01")
+    # mails = get_all_mails(df, "High Speed Internet Access")
     # for i in range(0, len(mails)):
     #     mails[i]['Date'] = int(datetime.fromisoformat(mails[i]["Date"]).timestamp())
     # mails = sorted(mails, key=lambda i: i['Date'])
     #
     # for i in range(0, len(mails)):
     #     print(mails[i])
+
+    print(link_mail.get_link_mails(df))
+
+    #first_word = wordnet.synset("Travel.v.01")
+    #second_word = wordnet.synset("Walk.v.01")
+    #print('Similarity: ' + str(first_word.wup_similarity(second_word)))
+    #first_word = wordnet.synset("Power.n.01")
+    #second_word = wordnet.synset("Energy.n.01")
+    #print('Similarity: ' + str(first_word.wup_similarity(second_word)))
