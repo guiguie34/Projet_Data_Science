@@ -1,6 +1,5 @@
 import string
 
-import nltk
 import pandas
 import operator
 import json
@@ -8,8 +7,10 @@ import csv
 import sys
 from datetime import datetime
 import re
+import nltk
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
+from nltk.corpus import wordnet as wn
 
 '''maxInt = sys.maxsize
 
@@ -37,13 +38,21 @@ def modification_texte(message):
 
 
 def modification_ntlk(message):
-    stop_words = stopwords.words('english') + [",", ";", ":", ".", "?", "!", "«", "»", "(", ")", "\"", "…", "'", "-", "’","--","<",">",]
+    message=message.lower()
+    stop_words = stopwords.words('english') + [",", ";", ":", ".", "?", "!", "«", "»", "(", ")", "\"", "…", "'", "-", "’","--","<",">","@","=","]","cc","&","$","''"]
     tokenizer = nltk.RegexpTokenizer(r"\w+") #regexp des ponctuations
     message_split = tokenizer.tokenize(message) # Separe le message en tableau de message sans les pontcuations
     #message_split = nltk.word_tokenize(message)
     stemming = PorterStemmer()
     stemmed_list = [stemming.stem(word) for word in message_split] #rassamble les mots qui sont similaire
     meaningful_words = [w for w in stemmed_list if not w.lower() in stop_words]
+
+    topopOut=[]
+    for i in range(0,len(meaningful_words)):
+        if re.match("[0-9]", meaningful_words[i]) is not None:
+            topopOut.append(meaningful_words[i])
+    for i in range(0,len(topopOut)):
+        meaningful_words.remove(topopOut[i])
     return meaningful_words
 
 
@@ -62,7 +71,6 @@ def get_words_content(df):
         courant = df['content'][i]
         courant = modification_ntlk(courant)
         occurrences = nb_occ(courant, occurrences)
-        #print(i)
     occurrences_sorted = sorted(occurrences.items(), key=operator.itemgetter(1))
     print(occurrences_sorted)
 
@@ -125,6 +133,38 @@ def get_all_mails(df, subject):
                 mails.append(tmp)
     return mails
 
+def get_general_words():
+    general_words = {}
+    jsonfile = open('../Generated Data/data_content.json', 'r')
+    data = json.load(jsonfile)
+    for i in range(len(data)-20,len(data)-820,-1):
+        #regarder s'il se trouve dans les synonyme existant
+        #regarder si ses synonymes le sont
+        # taux de corrélation
+        #ajout sinon
+
+        #similarité clé > 0.? -> ajoute dans les données du mot
+        added = False
+        if(len(wn.synsets(data[i][0]))!=0):
+            current_word = wn.synsets(data[i][0])[0]
+            for key,value in general_words.items():
+
+                if key.wup_similarity(current_word) is not None and key.wup_similarity(current_word)>0.6:
+                    general_words[key]+=[data[i][0]]
+                    added = True
+            if(not added):
+                general_words[current_word]=[]
+    print((general_words))
+    print(len(general_words))
+
+
+
+
+
+        #sinon clé -> ajoute synonyme
+
+        #check les hypernyms
+
 
 # TODO Objet --> Calculer le temps de réponse par rapport aux mails récupérés
 # TODO Thématique --> Déterminier une thématique par rapport aux mots présent dans le mails (enlever stop words)
@@ -132,17 +172,18 @@ def get_all_mails(df, subject):
 
 if __name__ == '__main__':
     data = pandas.read_csv("../Sources/data_clean.csv", sep=',', low_memory=False)
-    # data.fillna("NoData", inplace=True)  # Replace the null value by a string "NoData"
+    data.fillna("NoData", inplace=True)  # Replace the null value by a string "NoData"
     df = pandas.DataFrame(data)
-    # df.to_csv("../Sources/data_clean.csv", index=False)
-    nltk.download('stopwords')
-    nltk.download('punkt')
-    print(modification_ntlk("Nick frightened, likes, to > frightens play football, <however -- he - is : / not too frightening fond of tennis."))
+    #df.to_csv("../Sources/data_clean.csv", index=False)
+    #nltk.download('stopwords')
+    #nltk.download('punkt')
+    #nltk.download('wordnet')
+    #print(modification_ntlk("Nick frightened, likes, to > frightens play football, <however -- he - is : / not too frightening fond of tennis."))
     #get_words_subject(df)
     #stop_words = stopwords.words('english') + [",", ";", ":", ".", "?", "!", "«", "»", "(", ")", "\"", "…", "'", "-", "’"]
     #get_words_content(df)
     #df = df.drop_duplicates(subset=["Date", "From", "To", "content"], keep="last", ignore_index=True)
-
+    get_general_words()
     # mails = get_all_mails(df, "California Update 5/4/01")
     # for i in range(0, len(mails)):
     #     mails[i]['Date'] = int(datetime.fromisoformat(mails[i]["Date"]).timestamp())
