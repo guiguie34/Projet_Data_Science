@@ -128,17 +128,24 @@ if __name__ == '__main__':
     #get_words_subject(df)
     #stop_words = stopwords.words('english') + [",", ";", ":", ".", "?", "!", "«", "»", "(", ")", "\"", "…", "'", "-", "’"]
     #get_words_content(df)
-    #df = df.drop_duplicates(subset=["Date", "From", "To", "content"], keep="last", ignore_index=True)
 
-    # mails = get_all_mails(df, "High Speed Internet Access")
+    df = df.drop_duplicates(subset=["Date", "From", "To", "content"], keep="first", ignore_index=True)
+
+    # mails = link_mail.get_all_mails(df, "test")
     # for i in range(0, len(mails)):
     #     mails[i]['Date'] = int(datetime.fromisoformat(mails[i]["Date"]).timestamp())
     # mails = sorted(mails, key=lambda i: i['Date'])
+    # regexp = "frozenset\({|(}\))"
     #
     # for i in range(0, len(mails)):
-    #     print(mails[i])
+    #     print(re.sub(regexp, "", mails[i]["To"]))
+    #
+    for k,v in link_mail.get_link_mails(df).items():
+        print(k)
+        for t in v:
+            print("\t",t)
 
-    print(link_mail.get_link_mails(df))
+    #print(link_mail.get_link_mails(df))
 
     #first_word = wordnet.synset("Travel.v.01")
     #second_word = wordnet.synset("Walk.v.01")
