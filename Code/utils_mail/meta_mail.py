@@ -1,15 +1,17 @@
 import re
+
+
 class meta_mail:
 
     def __init__(self, related):
         regexp = 'frozenset\({|(}\))'
-        self.sender = re.sub(regexp,"",related['From'])
+        self.sender = re.sub(regexp, "", related['From'])
         StringTo = re.sub(regexp, "", related['To'])
         self.toList = StringTo.split(", ")
 
-    def __eq__(self,other):
+    def __eq__(self, other):
         if isinstance(other, meta_mail):
-            if self.sender == other.sender or self.toList in other.sender:
+            if self.sender == other.sender or other.sender in self.toList :
                 return True
             else:
                 return False
@@ -20,14 +22,20 @@ class meta_mail:
         return super().__hash__()
 
     def __str__(self):
-        txt= ""
-        for i in range(0,len(self.toList)):
-            txt += self.toList[i]
-        return self.sender + " " + txt
+        return self.sender + " " + str(self.toList)
 
     def __repr__(self):
 
-        return self.sender
+        return self.sender + " " + str(self.toList)
 
-    def __contains__(self, mail):
-        return mail in self.toList
+
+class dic_mail(dict):
+    def __contains__(self, o: meta_mail) -> bool:
+        for t in self:
+            if o == t:
+                return True
+    def sim(self, o: meta_mail):
+        for t in self:
+            if o == t:
+                return t
+

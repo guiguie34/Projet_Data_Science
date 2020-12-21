@@ -139,11 +139,12 @@ if __name__ == '__main__':
     #
     # for i in range(0, len(mails)):
     #     print(re.sub(regexp, "", mails[i]["To"]))
-    #
+
     for k,v in link_mail.get_link_mails(df).items():
-        print(k)
-        for t in v:
-            print("\t",t)
+        for k_v,v_v in v.items():
+            print("\tFiles de discussion: ", k_v)
+            for values in v_v:
+                print("\t\t",values)
 
     #print(link_mail.get_link_mails(df))
 

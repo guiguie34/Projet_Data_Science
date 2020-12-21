@@ -1,5 +1,5 @@
 import re
-from .meta_mail import meta_mail
+from .meta_mail import meta_mail, dic_mail
 
 
 def clean_subject_regex(subject):
@@ -16,6 +16,7 @@ def get_link_mails(df):
             relatedmail = get_all_mails(df, clean_subject)
             relatedmail2 = dispatch_mails(relatedmail)
             subject_mail[clean_subject] = relatedmail2
+    print(subject_mail)
     return subject_mail
 
 
@@ -40,7 +41,7 @@ def get_all_mails(df, subject):
 
 
 def dispatch_mails(related):
-    dispatch = {}
+    dispatch = dic_mail()
 
     for i in range(0, len(related)):
         found = False
@@ -57,12 +58,18 @@ def dispatch_mails(related):
         #         found = True
         #     j = j + 1
 
-        print(related[i])
-        print(courant, dispatch, courant in dispatch)
-        if courant in dispatch:
-            dispatch[courant].append(related[i])
+        # print(related[i])
+        # print(courant, dispatch, courant in dispatch)
+        sim = dispatch.sim(courant)
+        if sim is not None:
+            dispatch[sim] += [related[i]]
         else:
-            dispatch[courant] = related[i]
+            dispatch[courant] = [related[i]]
+
+
+
+
+
         #
         # if(found == False):
         #     dispatch[courant] = related[i]
