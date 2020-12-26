@@ -13,21 +13,21 @@ def get_link_mails(df):
         subject = df["Subject"][i]
         clean_subject = clean_subject_regex(subject)
         if (clean_subject != "NoData" and clean_subject != "") and clean_subject not in subject_mail:
-            relatedmail = get_all_mails(df, clean_subject)
+            relatedmail = get_all_mails_by_subject(df, clean_subject)
             relatedmail2 = dispatch_mails(relatedmail)
             subject_mail[clean_subject] = relatedmail2
     print(subject_mail)
     return subject_mail
 
 
-def get_all_mails(df, subject):
+def get_all_mails_by_subject(df, subject):
     mails = []
     for i in range(0, len(df.index)):
 
-        if (subject in df['Subject'][i]):
-            newSubject = clean_subject_regex(df['Subject'][i])
+        if subject in df['Subject'][i]:
+            new_subject = clean_subject_regex(df['Subject'][i])
 
-            if (newSubject in subject):
+            if new_subject in subject:
                 tmp = {}
                 tmp['id'] = df["Unnamed: 0"][i]
                 tmp['Date'] = df['Date'][i]
@@ -65,13 +65,5 @@ def dispatch_mails(related):
             dispatch[sim] += [related[i]]
         else:
             dispatch[courant] = [related[i]]
-
-
-
-
-
-        #
-        # if(found == False):
-        #     dispatch[courant] = related[i]
 
     return dispatch
