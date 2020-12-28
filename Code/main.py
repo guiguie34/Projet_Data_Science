@@ -1,4 +1,5 @@
 import string
+from concurrent.futures import thread
 
 import nltk
 import pandas
@@ -10,7 +11,7 @@ from datetime import datetime
 import re
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
-from nltk.corpus import wordnet  # Import wordnet from the NLTK
+from nltk.corpus import wordnet as wn  # Import wordnet from the NLTK
 from Code.utils_mail import link_mail
 from Code.utils_mail import processing_mail
 
@@ -110,13 +111,19 @@ if __name__ == '__main__':
     # for i in range(0, len(mails)):
     #     print(re.sub(regexp, "", mails[i]["To"]))
 
-    for k, v in link_mail.get_link_mails(df).items():
-        for k_v, v_v in v.items():
-            print("\tFiles de discussion: ", k_v)
-            for values in v_v:
-                print("\t\t", values)
+    # for k, v in link_mail.get_link_mails(df).items():
+    #     for k_v, v_v in v.items():
+    #         print("\tFiles de discussion: ", k_v)
+    #         for values in v_v:
+    #             print("\t\t", values)
 
-    # print(link_mail.get_link_mails(df))
+
+
+    a_file = open("../Generated Data/link_mail.json", "a+")
+    json.dump(link_mail.get_link_mails(df), a_file)
+    a_file.close()
+
+    #print(link_mail.get_link_mails(df))
 
     # first_word = wordnet.synset("Travel.v.01")
     # second_word = wordnet.synset("Walk.v.01")

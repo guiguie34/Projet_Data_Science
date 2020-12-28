@@ -1,3 +1,4 @@
+import json
 import re
 from .meta_mail import meta_mail, dic_mail
 
@@ -9,7 +10,8 @@ def clean_subject_regex(subject):
 
 def get_link_mails(df):
     subject_mail = {}
-    for i in range(284, 285):
+    for i in range(50001, len(df)):
+        print(i)
         subject = df["Subject"][i]
         clean_subject = clean_subject_regex(subject)
         if (clean_subject != "NoData" and clean_subject != "") and clean_subject not in subject_mail:
@@ -18,7 +20,6 @@ def get_link_mails(df):
             subject_mail[clean_subject] = relatedmail2
     print(subject_mail)
     return subject_mail
-
 
 def get_all_mails_by_subject(df, subject):
     mails = []
@@ -29,11 +30,11 @@ def get_all_mails_by_subject(df, subject):
 
             if new_subject in subject:
                 tmp = {}
-                tmp['id'] = df["Unnamed: 0"][i]
-                tmp['Date'] = df['Date'][i]
-                tmp['From'] = df['From'][i]
-                tmp['To'] = df['To'][i]
-                tmp['Subject'] = df['Subject'][i]
+                tmp["id"] = int(df["Unnamed: 0"][i])
+                tmp["Date"] = df['Date'][i]
+                tmp["From"] = df['From'][i]
+                tmp["To"] = df['To'][i]
+                tmp["Subject"] = df['Subject'][i]
                 # tmp['content'] = df['content'][i]
                 # tmp['user'] = df['user'][i]
                 mails.append(tmp)
@@ -62,8 +63,8 @@ def dispatch_mails(related):
         # print(courant, dispatch, courant in dispatch)
         sim = dispatch.sim(courant)
         if sim is not None:
-            dispatch[sim] += [related[i]]
+            dispatch[sim.__str__()] += [related[i]]
         else:
-            dispatch[courant] = [related[i]]
+            dispatch[courant.__str__()] = [related[i]]
 
     return dispatch
