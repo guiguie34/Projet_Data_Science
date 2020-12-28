@@ -47,6 +47,41 @@ def csv_to_json(data):
         jsonfile.write('\n')
 
 
+
+
+def get_general_words():
+    general_words = {}
+    jsonfile = open('../Generated Data/data_content.json', 'r')
+    data = json.load(jsonfile)
+    for i in range(len(data)-20,len(data)-820,-1):
+        #regarder s'il se trouve dans les synonyme existant
+        #regarder si ses synonymes le sont
+        # taux de corrélation
+        #ajout sinon
+
+        #similarité clé > 0.? -> ajoute dans les données du mot
+        added = False
+        if(len(wn.synsets(data[i][0]))!=0):
+            current_word = wn.synsets(data[i][0])[0]
+            for key,value in general_words.items():
+
+                if key.wup_similarity(current_word) is not None and key.wup_similarity(current_word)>0.6:
+                    general_words[key]+=[data[i][0]]
+                    added = True
+            if(not added):
+                general_words[current_word]=[]
+    print((general_words))
+    print(len(general_words))
+
+
+
+
+
+        #sinon clé -> ajoute synonyme
+
+        #check les hypernyms
+
+
 # TODO Objet --> Calculer le temps de réponse par rapport aux mails récupérés
 # TODO Thématique --> Déterminier une thématique par rapport aux mots présent dans le mails (enlever stop words)
 # TODO FilterData --> Trouver les mails avec des réponses que l'on peut exploiter
