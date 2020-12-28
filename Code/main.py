@@ -1,5 +1,4 @@
 import string
-from concurrent.futures import thread
 
 import nltk
 import pandas
@@ -48,39 +47,33 @@ def csv_to_json(data):
         jsonfile.write('\n')
 
 
-
-
 def get_general_words():
     general_words = {}
     jsonfile = open('../Generated Data/data_content.json', 'r')
     data = json.load(jsonfile)
-    for i in range(len(data)-20,len(data)-820,-1):
-        #regarder s'il se trouve dans les synonyme existant
-        #regarder si ses synonymes le sont
+    for i in range(len(data) - 20, len(data) - 820, -1):
+        # regarder s'il se trouve dans les synonyme existant
+        # regarder si ses synonymes le sont
         # taux de corrélation
-        #ajout sinon
+        # ajout sinon
 
-        #similarité clé > 0.? -> ajoute dans les données du mot
+        # similarité clé > 0.? -> ajoute dans les données du mot
         added = False
-        if(len(wn.synsets(data[i][0]))!=0):
+        if (len(wn.synsets(data[i][0])) != 0):
             current_word = wn.synsets(data[i][0])[0]
-            for key,value in general_words.items():
+            for key, value in general_words.items():
 
-                if key.wup_similarity(current_word) is not None and key.wup_similarity(current_word)>0.6:
-                    general_words[key]+=[data[i][0]]
+                if key.wup_similarity(current_word) is not None and key.wup_similarity(current_word) > 0.6:
+                    general_words[key] += [data[i][0]]
                     added = True
-            if(not added):
-                general_words[current_word]=[]
+            if (not added):
+                general_words[current_word] = []
     print((general_words))
     print(len(general_words))
 
+    # sinon clé -> ajoute synonyme
 
-
-
-
-        #sinon clé -> ajoute synonyme
-
-        #check les hypernyms
+    # check les hypernyms
 
 
 # TODO Objet --> Calculer le temps de réponse par rapport aux mails récupérés
@@ -117,13 +110,11 @@ if __name__ == '__main__':
     #         for values in v_v:
     #             print("\t\t", values)
 
-
-
     a_file = open("../Generated Data/link_mail.json", "a+")
     json.dump(link_mail.get_link_mails(df), a_file)
     a_file.close()
 
-    #print(link_mail.get_link_mails(df))
+    # print(link_mail.get_link_mails(df))
 
     # first_word = wordnet.synset("Travel.v.01")
     # second_word = wordnet.synset("Walk.v.01")
