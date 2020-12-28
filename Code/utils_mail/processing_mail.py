@@ -4,6 +4,7 @@ import operator
 import json
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
+import re
 
 
 def modification_texte(message):
@@ -19,14 +20,23 @@ def modification_texte(message):
 
 
 def modification_ntlk(message):
+    message = message.lower()
     stop_words = stopwords.words('english') + [",", ";", ":", ".", "?", "!", "«", "»", "(", ")", "\"", "…", "'", "-",
-                                               "’", "--", "<", ">", ]
+                                               "’", "--", "<", ">","@","=","]","cc","&","$","''" ]
     tokenizer = nltk.RegexpTokenizer(r"\w+")  # regexp des ponctuations
     message_split = tokenizer.tokenize(message)  # Separe le message en tableau de message sans les pontcuations
     # message_split = nltk.word_tokenize(message)
     stemming = PorterStemmer()
     stemmed_list = [stemming.stem(word) for word in message_split]  # rassamble les mots qui sont similaire
     meaningful_words = [w for w in stemmed_list if not w.lower() in stop_words]
+
+    topopOut=[]
+    for i in range(0,len(meaningful_words)):
+        if re.match("[0-9]", meaningful_words[i]) is not None:
+            topopOut.append(meaningful_words[i])
+    for i in range(0,len(topopOut)):
+        meaningful_words.remove(topopOut[i])
+
     return meaningful_words
 
 
