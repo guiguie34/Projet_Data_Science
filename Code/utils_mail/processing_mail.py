@@ -5,6 +5,8 @@ import json
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 import re
+from nltk.corpus import wordnet as wn  # Import wordnet from the NLTK
+from nltk.stem import WordNetLemmatizer
 
 
 def modification_texte(message):
@@ -21,24 +23,37 @@ def modification_texte(message):
 
 def modification_ntlk(message):
     message = message.lower()
-    stop_words = stopwords.words('english') + [",", ";", ":", ".", "?", "!", "«", "»", "(", ")", "\"", "…", "'", "-",
-                                               "’", "--", "<", ">","@","=","]","cc","&","$","''" ]
-    tokenizer = nltk.RegexpTokenizer(r"\w+")  # regexp des ponctuations
-    message_split = tokenizer.tokenize(message)  # Separe le message en tableau de message sans les pontcuations
-    # message_split = nltk.word_tokenize(message)
-    stemming = PorterStemmer()
-    stemmed_list = [stemming.stem(word) for word in message_split]  # rassamble les mots qui sont similaire
-    meaningful_words = [w for w in stemmed_list if not w.lower() in stop_words]
+    # stop_words = stopwords.words('english') + [",", ";", ":", ".", "?", "!", "«", "»", "(", ")", "\"", "…", "'", "-",
+    #                                            "’", "--", "<", ">","@","=","]","cc","&","$","''" ]
+    # tokenizer = nltk.RegexpTokenizer(r"\w+")  # regexp des ponctuations
+    # message_split = tokenizer.tokenize(message)  # Separe le message en tableau de message sans les pontcuations
+    # # message_split = nltk.word_tokenize(message)
+    # stemming = PorterStemmer()
+    # stemmed_list = [stemming.stem(word) for word in message_split]  # rassamble les mots qui sont similaire
+    # meaningful_words = [w for w in stemmed_list if not w.lower() in stop_words]
 
-    topopOut=[]
-    for i in range(0,len(meaningful_words)):
-        if re.match("[0-9]", meaningful_words[i]) is not None:
-            topopOut.append(meaningful_words[i])
-    for i in range(0,len(topopOut)):
-        meaningful_words.remove(topopOut[i])
+    message=lemmatize_word(message)
 
-    return meaningful_words
+    # topopOut=[]
+    # for i in range(0,len(meaningful_words)):
+    #     if re.match("[0-9]", meaningful_words[i]) is not None:
+    #         topopOut.append(meaningful_words[i])
+    # for i in range(0,len(topopOut)):
+    #     meaningful_words.remove(topopOut[i])
 
+    return message
+
+def lemmatize_word(sentence):
+    pos = ["A", "V", "N"]
+    new_sentence = nltk.pos_tag(nltk.word_tokenize(sentence), tagset='universal')
+    final_sentence =[]
+    for i in range(0,len(new_sentence)):
+        first_char_in_pos = new_sentence[i][1][0]
+        if first_char_in_pos in pos:
+            word =new_sentence[i][0]
+            if len(wn.synsets(word, pos=first_char_in_pos.lower()))!=0:
+                final_sentence.append(wn.synsets(word, pos=first_char_in_pos.lower())[0])
+    return final_sentence
 
 def nb_occ(message, occurrences):
     for c in message:
