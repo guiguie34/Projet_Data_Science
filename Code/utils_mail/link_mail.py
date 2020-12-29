@@ -66,7 +66,9 @@ def dispatch_mails(related):
         if sim is not None:
             tmp = dispatch[sim]
             dispatch.pop(sim,None)
-            sim+=courant.toList.__str__()
+            for receiver in courant.toList:
+                if receiver not in sim:
+                    sim += receiver
 
             dispatch[sim]= tmp
 
