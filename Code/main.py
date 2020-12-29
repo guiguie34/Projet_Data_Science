@@ -57,17 +57,19 @@ def csv_to_json(data):
 
 if __name__ == '__main__':
     #
-    # data = pandas.read_csv("../Sources/data_clean.csv", sep=',', low_memory=False)
-    # data.fillna("NoData", inplace=True)  # Replace the null value by a string "NoData"
-    # df = pandas.DataFrame(data)
-    # df = df.drop_duplicates(subset=["Date", "From", "To", "content"], keep="first", ignore_index=True)
+    data = pandas.read_csv("../Sources/data_clean.csv", sep=',', low_memory=False)
+    data.fillna("NoData", inplace=True)  # Replace the null value by a string "NoData"
+    df = pandas.DataFrame(data)
+    df = df.drop_duplicates(subset=["Date", "From", "To", "content"], keep="first", ignore_index=True)
     # processing_mail.get_words_content(df)
     # print("Content done")
-# df.to_csv("../Sources/data_clean.csv", index=False)
+    # df.to_csv("../Sources/data_clean.csv", index=False)
     # nltk.download('stopwords')
     # nltk.download('punkt')
     # print(modification_ntlk("Nick frightened, likes, to > frightens play football, <however -- he - is : / not too frightening fond of tennis."))
+    # processing_mail.get_words_subject(df)
     # stop_words = stopwords.words('english') + [",", ";", ":", ".", "?", "!", "«", "»", "(", ")", "\"", "…", "'", "-", "’"]
+    # processing_mail.get_words_content(df)
 
 
     # mails = link_mail.get_all_mails(df, "test")
@@ -89,7 +91,16 @@ if __name__ == '__main__':
     # json.dump(link_mail.get_link_mails(df), a_file)
      #a_file.close()
 
-    # print(link_mail.get_link_mails(df))
+
+    a_file = open("../Generated Data/link_mail1.json", "w")
+    json.dump(link_mail.get_link_mails(df), a_file, indent=4)
+    a_file.close()
+
+    # with open("../Generated Data/link_mail1.json") as f:
+    #     data = json.loads(f.read())
+    #     print(json.dumps(data, indent=4, sort_keys=True))
+
+    #print(link_mail.get_link_mails(df))
 
     # first_word = wordnet.synset("Travel.v.01")
     # second_word = wordnet.synset("Walk.v.01")
@@ -98,6 +109,6 @@ if __name__ == '__main__':
     # second_word = wordnet.synset("Energy.n.01")
     # print('Similarity: ' + str(first_word.wup_similarity(second_word)))
 
-    get_themes.get_general_words()
+    #get_themes.get_general_words()
 
 
