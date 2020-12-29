@@ -15,11 +15,12 @@ def get_link_mails(df):
         subject = df["Subject"][i]
         clean_subject = clean_subject_regex(subject)
         if (clean_subject != "NoData" and clean_subject != "") and clean_subject not in subject_mail:
-            relatedmail = get_all_mails_by_subject(df, clean_subject)
-            relatedmail2 = dispatch_mails(relatedmail)
+            relatedmail = get_all_mails_by_subject(df, clean_subject)  # Mails qui appartiennent aux même sujets
+            relatedmail2 = dispatch_mails(relatedmail)  # Mails sous forment de conversations
             subject_mail[clean_subject] = relatedmail2
     print(subject_mail)
     return subject_mail
+
 
 def get_all_mails_by_subject(df, subject):
     mails = []
