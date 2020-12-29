@@ -56,13 +56,13 @@ def csv_to_json(data):
 
 
 if __name__ == '__main__':
-
+    #
     # data = pandas.read_csv("../Sources/data_clean.csv", sep=',', low_memory=False)
     # data.fillna("NoData", inplace=True)  # Replace the null value by a string "NoData"
     # df = pandas.DataFrame(data)
     # df = df.drop_duplicates(subset=["Date", "From", "To", "content"], keep="first", ignore_index=True)
     # processing_mail.get_words_content(df)
-
+    # print("Content done")
 # df.to_csv("../Sources/data_clean.csv", index=False)
     # nltk.download('stopwords')
     # nltk.download('punkt')

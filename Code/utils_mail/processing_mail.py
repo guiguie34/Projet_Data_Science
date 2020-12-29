@@ -80,9 +80,7 @@ def get_words_content(df):
         courant = modification_ntlk(courant)
         occurrences = nb_occ(courant, occurrences)
 
-    occurrences_sorted = sorted(occurrences.items(), key=operator.itemgetter(1))
-    # print(occurrences_sorted)
-
+    occurrences_sorted = sorted(occurrences.items(), key = lambda item : item[1][1])
     a_file = open("../Generated Data/data_content.json", "w")
     json.dump(occurrences_sorted, a_file)
     a_file.close()
@@ -103,3 +101,8 @@ def get_words_subject(df):
     a_file = open("../Generated Data/data_subject.json", "w")
     json.dump(occurrences_sorted, a_file)
     a_file.close()
+
+def test_order():
+    dico = {'test':['n',4],'eat':['v',18],'eatable':['a',38],'adopted':['a',2],'adopt':['v',22]}
+    dico = sorted(dico.items(), key = lambda item : item[1][1])
+    print(dico)
