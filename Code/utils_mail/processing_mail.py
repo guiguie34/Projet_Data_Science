@@ -8,6 +8,8 @@ import re
 from nltk.corpus import wordnet as wn  # Import wordnet from the NLTK
 from nltk.stem import WordNetLemmatizer
 
+global pos
+pos = ["A", "V", "N"]
 
 def modification_texte(message):
     ponctuation = [",", ";", ":", ".", "?", "!", "«", "»", "(", ")", "\"", "…", "'", "-", "’"]
@@ -44,7 +46,6 @@ def modification_ntlk(message):
     return message
 
 def lemmatize_word(sentence):
-    pos = ["A", "V", "N"]
     new_sentence = nltk.pos_tag(nltk.word_tokenize(sentence), tagset='universal')
     final_sentence =[]
     for i in range(0,len(new_sentence)):
@@ -57,7 +58,15 @@ def lemmatize_word(sentence):
 
 def nb_occ(message, occurrences):
     for c in message:
-        occurrences[c] = occurrences.get(c, 0) + 1
+        synset = c.name().split('.')
+        word, position = synset[0],synset[1]
+        if occurrences.get(word, 0) != 0:
+            if position in occurrences.get(word, 0)[0] :
+                occurrences.get(word,0)[1] += 1
+            else:
+                occurrences[word] = [position, 1]
+        else:
+            occurrences[word] = [position, 1]
 
     return occurrences
 
