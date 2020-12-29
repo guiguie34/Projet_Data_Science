@@ -9,7 +9,7 @@ from nltk.corpus import wordnet as wn  # Import wordnet from the NLTK
 from nltk.stem import WordNetLemmatizer
 
 global pos
-pos = ["A", "V", "N"]
+pos = ["A", "V", "N","a","v","n"]
 
 def modification_texte(message):
     ponctuation = [",", ";", ":", ".", "?", "!", "«", "»", "(", ")", "\"", "…", "'", "-", "’"]

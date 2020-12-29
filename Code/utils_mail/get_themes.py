@@ -7,13 +7,13 @@ import operator
 
 # jsonfile = open('../Generated Data/data_themes.json', 'r')
 # data = json.load(jsonfile)
-
+processing_mail.pos
 
 def get_general_words():
     general_words = {}
     jsonfile = open('../Generated Data/data_content.json', 'r')
     data = json.load(jsonfile)
-    for i in range(len(data) - 1, len(data)-30, -1):
+    for i in range(len(data)-1, 0, -1):
         # regarder s'il se trouve dans les synonyme existant
         # regarder si ses synonymes le sont
         # taux de corrélation
@@ -21,20 +21,22 @@ def get_general_words():
 
         # similarité clé > 0.? -> ajoute dans les données du mot
         added = False
-        if (len(wn.synsets(data[i][0])) != 0):
-            current_word = wn.synsets(data[i][0])[0]
-            #current_word = data[i][0]
-            for key, value in general_words.items():
-
-                if key.wup_similarity(current_word) is not None and key.wup_similarity(current_word) > 0.6:
-                    general_words[key] += [data[i][0]]
-                    added = True
-            if (not added):
-                general_words[current_word] = []
+        word = data[i][0]
+        position = data[i][1][0]
+        if position in processing_mail.pos:
+            if len(wn.synsets(word, pos=position)) != 0:
+                current_word = wn.synsets(word,pos=position)[0]
+                #current_word = data[i][0]
+                for key, value in general_words.items():
+                    if len(wn.synsets(key,pos=general_words.get(key,0)[0])) != 0 :
+                        if wn.synsets(key)[0].wup_similarity(current_word) is not None and wn.synsets(key)[0].wup_similarity(current_word) > 0.6:
+                            general_words.get(key,0)[1] += [word]
+                            added = True
+                if (not added):
+                    general_words[word] = [position,[]]
     a_file = open("../Generated Data/data_themes.json", "w")
-    json.dump(general_words, a_file)
+    json.dump(general_words, a_file,indent=4)
     a_file.close()
-    return general_words
 
 
     # sinon clé -> ajoute synonyme
@@ -68,6 +70,7 @@ def get_similarity_of_text(text):
 #return the most similar word for a specific word
 
 def get_similarity_of_word(word,Thedata):
+    print(word)
     current_word = wn.synsets(word)[0]
     maxTheme=""
     maxValue=0
@@ -84,6 +87,10 @@ def get_similarity_of_word(word,Thedata):
             maxTheme = (key.name()).split('.')[0]
     return maxTheme
 
-
+def testsimil():
+    time=wn.synsets("Synset('thursday.n.01')")[0]
+    week=wn.synsets("Synset('tuesday.n.01')")[0]
+    print(time.wup_similarity(week))
+    print(time.path_similarity(week))
 
 
