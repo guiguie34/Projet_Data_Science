@@ -10,16 +10,17 @@ def clean_subject_regex(subject):
 
 def get_link_mails(df):
     subject_mail = {}
-    for i in range(50001, len(df)):
-        print(i)
-        subject = df["Subject"][i]
-        clean_subject = clean_subject_regex(subject)
-        if (clean_subject != "NoData" and clean_subject != "") and clean_subject not in subject_mail:
-            relatedmail = get_all_mails_by_subject(df, clean_subject)
-            relatedmail2 = dispatch_mails(relatedmail)
-            subject_mail[clean_subject] = relatedmail2
+    #for i in range(200, 300):
+
+    #subject = df["Subject"][i]
+    clean_subject = clean_subject_regex("Re: Western Wholesale Activities - Gas & Power Conf. Call")
+    if (clean_subject != "NoData" and clean_subject != "") and clean_subject not in subject_mail:
+        relatedmail = get_all_mails_by_subject(df, clean_subject)  # Mails qui appartiennent aux même sujets
+        relatedmail2 = dispatch_mails(relatedmail)  # Mails sous forment de conversations
+        subject_mail[clean_subject] = relatedmail2
     print(subject_mail)
     return subject_mail
+
 
 def get_all_mails_by_subject(df, subject):
     mails = []
@@ -35,7 +36,7 @@ def get_all_mails_by_subject(df, subject):
                 tmp["From"] = df['From'][i]
                 tmp["To"] = df['To'][i]
                 tmp["Subject"] = df['Subject'][i]
-                # tmp['content'] = df['content'][i]
+                tmp["content"] = df['content'][i]
                 # tmp['user'] = df['user'][i]
                 mails.append(tmp)
     return mails
@@ -63,7 +64,15 @@ def dispatch_mails(related):
         # print(courant, dispatch, courant in dispatch)
         sim = dispatch.sim(courant)
         if sim is not None:
-            dispatch[sim.__str__()] += [related[i]]
+            tmp = dispatch[sim]
+            dispatch.pop(sim,None)
+            for receiver in courant.toList:
+                if receiver not in sim:
+                    sim += receiver
+
+            dispatch[sim]= tmp
+
+            dispatch[sim] += [related[i]]
         else:
             dispatch[courant.__str__()] = [related[i]]
 

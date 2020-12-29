@@ -11,12 +11,15 @@ class meta_mail:
 
     def __eq__(self, other):
         if isinstance(other, meta_mail):
-            if self.sender == other.sender or other.sender in self.toList :
+            if self.sender == other.sender or self.sender in other.toList :
                 return True
             else:
                 return False
         else:
             return False
+
+    def addToList(self,other):
+        self.toList.extend(other.toList)
 
     def __hash__(self) -> int:
         return super().__hash__()
@@ -34,8 +37,9 @@ class dic_mail(dict):
         for t in self:
             if o == t:
                 return True
+
     def sim(self, o: meta_mail):
         for t in self:
-            if o == t:
+            if o.sender.__str__() in t:
                 return t
 
