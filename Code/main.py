@@ -57,10 +57,10 @@ def csv_to_json(data):
 
 if __name__ == '__main__':
     #
-    data = pandas.read_csv("../Sources/data_clean.csv", sep=',', low_memory=False)
-    data.fillna("NoData", inplace=True)  # Replace the null value by a string "NoData"
-    df = pandas.DataFrame(data)
-    df = df.drop_duplicates(subset=["Date", "From", "To", "content"], keep="first", ignore_index=True)
+    # data = pandas.read_csv("../Sources/data_clean.csv", sep=',', low_memory=False)
+    # data.fillna("NoData", inplace=True)  # Replace the null value by a string "NoData"
+    # df = pandas.DataFrame(data)
+    # df = df.drop_duplicates(subset=["Date", "From", "To", "content"], keep="first", ignore_index=True)
     # processing_mail.get_words_content(df)
     # print("Content done")
     # df.to_csv("../Sources/data_clean.csv", index=False)
@@ -92,9 +92,9 @@ if __name__ == '__main__':
      #a_file.close()
 
 
-    a_file = open("../Generated Data/link_mail1.json", "w")
-    json.dump(link_mail.get_link_mails(df), a_file, indent=4)
-    a_file.close()
+    # a_file = open("../Generated Data/link_mail1.json", "w")
+    # json.dump(link_mail.get_link_mails(df), a_file, indent=4)
+    # a_file.close()
 
     # with open("../Generated Data/link_mail1.json") as f:
     #     data = json.loads(f.read())
@@ -109,6 +109,6 @@ if __name__ == '__main__':
     # second_word = wordnet.synset("Energy.n.01")
     # print('Similarity: ' + str(first_word.wup_similarity(second_word)))
 
-    #get_themes.get_general_words()
+    get_themes.get_similarity_of_text("During the American Revolution, George Washington worked to contain a smallpox epidemic by isolating anyone suspected of infection and limiting outside contact with his army. In 1776, when the British withdrew from Boston, Washington mandated that only soldiers that had already been infected be allowed into the city.")
 
 

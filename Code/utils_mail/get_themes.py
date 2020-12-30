@@ -5,9 +5,9 @@ from Code.utils_mail import processing_mail
 import numpy as np
 import operator
 
-# jsonfile = open('../Generated Data/data_themes.json', 'r')
-# data = json.load(jsonfile)
-processing_mail.pos
+global themes
+jsonfile = open('../Generated Data/data_themes.json', 'r')
+themes = json.load(jsonfile)
 
 def get_general_words():
     general_words = {}
@@ -57,34 +57,36 @@ def get_mail_themes(discussion):
 # replace the text by the similar words
 def get_similarity_of_text(text):
 
-    newData = get_general_words()
     newText = processing_mail.modification_ntlk(text)
-    print(newText)
-    saveSentence=newText
-    for i in range (0,len(newText)) :
-        print(newText[i])
-        newText[i] = get_similarity_of_word(newText[i],newData)
-    print(saveSentence)
-    print(newText)
+    edited_text=[]
+    for i in range (0,len(newText)):
+        edited_text.append(get_similarity_of_word(newText[i]))
+    print("old : ",newText)
+    print("new : ",edited_text)
 
 #return the most similar word for a specific word
 
-def get_similarity_of_word(word,Thedata):
-    print(word)
-    current_word = wn.synsets(word)[0]
-    maxTheme=""
-    maxValue=0
-    for key,values in Thedata.items():
+def get_similarity_of_word(word):
+    maxTheme = ""
+    maxValue = 0
+    for key,values in themes.items():
+        key_synset = wn.synsets(key,pos=values[0])[0]
+        key_simil = key_synset.wup_similarity(word)
         tmpSimil = []
-        tmpSimil.append(float(key.wup_similarity( current_word )))
-        for i in range(0,len(values)):
-            newValue = wn.synsets(values[i])[0]
-            tmpSimil.append(float(newValue.wup_similarity(current_word)))
-
-        mean = np.mean(tmpSimil)
-        if(mean>maxValue):
+        if key_simil!=None:
+            tmpSimil.append(float(key_simil))
+        for i in range(0,len(values[1])):
+            synsets = wn.synsets(values[1][i])
+            if len(synsets) != 0:
+                newValue = wn.synsets(values[1][i])[0]
+                simil_rate = newValue.wup_similarity(word)
+                if simil_rate != None:
+                    tmpSimil.append(float(simil_rate))
+        if len(tmpSimil) != 0:
+            mean = np.mean(tmpSimil)
+        if mean>maxValue:
             maxValue = mean
-            maxTheme = (key.name()).split('.')[0]
+            maxTheme = key
     return maxTheme
 
 def testsimil():
