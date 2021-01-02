@@ -16,9 +16,11 @@ def get_link_mails(df):
     clean_subject = clean_subject_regex("Re: Western Wholesale Activities - Gas & Power Conf. Call")
     if (clean_subject != "NoData" and clean_subject != "") and clean_subject not in subject_mail:
         relatedmail = get_all_mails_by_subject(df, clean_subject)  # Mails qui appartiennent aux même sujets
-        relatedmail2 = dispatch_mails(relatedmail)  # Mails sous forment de conversations
+        relatedmail2 = dispatch_mails(relatedmail)  # Mails sous forme de conversations
+        #relatedmail2 = sorted(relatedmail2, key=lambda k: k['Date'])
         subject_mail[clean_subject] = relatedmail2
     print(subject_mail)
+
     return subject_mail
 
 
@@ -46,10 +48,10 @@ def dispatch_mails(related):
     dispatch = dic_mail()
 
     for i in range(0, len(related)):
-        found = False
-        j = 0
+        #found = False
+        #j = 0
         courant = meta_mail(related[i])
-        keys = list(dispatch)
+        #keys = list(dispatch)
         # while (found == False) and j < len(keys):
         #     #print(dispatch,len(dispatch))
         #     #print(keys)
@@ -76,4 +78,15 @@ def dispatch_mails(related):
         else:
             dispatch[courant.__str__()] = [related[i]]
 
+    for k,v in dispatch.items():
+        dispatch[k] = sorted(dispatch[k], key=lambda j: j['Date'])
     return dispatch
+
+
+def concatenate_mail(tab):
+    content_mails = ""
+    for i in range(0,len(tab)):
+        content_mails += tab[i].get("content")
+    return content_mails
+
+

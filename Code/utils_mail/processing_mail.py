@@ -1,7 +1,12 @@
 import string
+from datetime import datetime
+
 import nltk
 import operator
 import json
+import time
+import datetime
+import numpy
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 import re
@@ -106,3 +111,19 @@ def test_order():
     dico = {'test':['n',4],'eat':['v',18],'eatable':['a',38],'adopted':['a',2],'adopt':['v',22]}
     dico = sorted(dico.items(), key = lambda item : item[1][1])
     print(dico)
+
+def transform_time_mail(tab):
+    temps_echange = []
+    temps_echange_relatif = []
+    for i in range(0, len(tab)):
+        #time.mktime(datetime.strptime(tab[i]["Date"], "%Y-%m-%d %H:%M:%S").timetuple())
+        temps_echange.append(time.mktime(datetime.datetime.strptime(tab[i]["Date"], "%Y-%m-%d %H:%M:%S").timetuple()))
+
+
+        #tab[i]['Date'] = int(datetime.fromisoformat(tab[i]["Date"]).timestamp())
+    if len(temps_echange)>1:
+        for i in range(1,len(temps_echange)):
+            temps_echange_relatif.append(temps_echange[i]-temps_echange[i-1])
+        return numpy.mean(temps_echange_relatif)
+    else:
+        return None

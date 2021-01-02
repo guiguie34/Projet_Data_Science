@@ -1,9 +1,13 @@
+import collections
 import json
 from nltk.corpus import wordnet as wn  # Import wordnet from the NLTK
 from nltk.corpus import stopwords
 from Code.utils_mail import processing_mail
+from Code.utils_mail import link_mail
 import numpy as np
 import operator
+
+
 
 global themes
 jsonfile = open('../Generated Data/data_themes.json', 'r')
@@ -44,6 +48,29 @@ def get_general_words():
     # check les hypernyms
 
 
+#fonction qui retourne les themes pour toutes les discussion d'un objet
+def get_discussion_themes(dict):
+    dataForANOVA = {}
+    for sujet,mails in dict.items():
+        for k,v in mails.items():
+            themes=get_one_discussion_themes(v)
+            #TODO: temps de reponse de la conversation
+            temps_echange = processing_mail.transform_time_mail(v)
+            for couple in themes:
+                if couple[0] in dataForANOVA:
+                    dataForANOVA[couple[0]] += [temps_echange]
+                else:
+                    dataForANOVA[couple[0]] = [temps_echange]
+
+    return dataForANOVA
+
+
+
+# fonction qui retourne les themes pour une discussion
+def get_one_discussion_themes(tab):
+    global_content = link_mail.concatenate_mail(tab)
+    return get_mail_themes(global_content)
+
 # compteur on the words and return the 3 main themes
 def get_mail_themes(discussion):
 
@@ -52,7 +79,10 @@ def get_mail_themes(discussion):
     #Pour chaque fil, regarder la similarité de cahque mot apres fitrage avec la liste créee.
     # a la fin, regarder les 3 thèmes qui ressortent et les stocker
 
-    return discussion
+    all_themes = get_similarity_of_text(discussion)
+    themes = collections.Counter(all_themes).most_common(3)
+
+    return themes
 
 # replace the text by the similar words
 def get_similarity_of_text(text):
@@ -63,31 +93,39 @@ def get_similarity_of_text(text):
         edited_text.append(get_similarity_of_word(newText[i]))
     print("old : ",newText)
     print("new : ",edited_text)
+    return edited_text
 
 #return the most similar word for a specific word
+global global_themes
+global_themes = {}
+
 
 def get_similarity_of_word(word):
-    maxTheme = ""
-    maxValue = 0
-    for key,values in themes.items():
-        key_synset = wn.synsets(key,pos=values[0])[0]
-        key_simil = key_synset.wup_similarity(word)
-        tmpSimil = []
-        if key_simil!=None:
-            tmpSimil.append(float(key_simil))
-        for i in range(0,len(values[1])):
-            synsets = wn.synsets(values[1][i])
-            if len(synsets) != 0:
-                newValue = wn.synsets(values[1][i])[0]
-                simil_rate = newValue.wup_similarity(word)
-                if simil_rate != None:
-                    tmpSimil.append(float(simil_rate))
-        if len(tmpSimil) != 0:
-            mean = np.mean(tmpSimil)
-        if mean>maxValue:
-            maxValue = mean
-            maxTheme = key
-    return maxTheme
+    if word in global_themes:
+        return global_themes[word]
+    else:
+        maxTheme = ""
+        maxValue = 0
+        for key,values in themes.items():
+            key_synset = wn.synsets(key,pos=values[0])[0]
+            key_simil = key_synset.wup_similarity(word)
+            tmpSimil = []
+            if key_simil!=None:
+                tmpSimil.append(float(key_simil))
+            for i in range(0,int((len(values[1]))*0.001)):
+                synsets = wn.synsets(values[1][i])
+                if len(synsets) != 0:
+                    newValue = wn.synsets(values[1][i])[0]
+                    simil_rate = newValue.wup_similarity(word)
+                    if simil_rate != None:
+                        tmpSimil.append(float(simil_rate))
+            if len(tmpSimil) != 0:
+                mean = np.mean(tmpSimil)
+            if mean>maxValue:
+                maxValue = mean
+                maxTheme = key
+        global_themes[word] = maxTheme
+        return maxTheme
 
 def testsimil():
     time=wn.synsets("Synset('thursday.n.01')")[0]

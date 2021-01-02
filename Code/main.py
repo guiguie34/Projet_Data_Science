@@ -15,6 +15,7 @@ from Code.utils_mail import get_themes
 #nltk.download('averaged_perceptron_tagger')
 #nltk.download('wordnet')
 #nltk.download('universal_tagset')
+from Code.utils_mail.get_themes import get_discussion_themes
 
 '''maxInt = sys.maxsize
 
@@ -58,14 +59,16 @@ def csv_to_json(data):
 if __name__ == '__main__':
     #
     # data = pandas.read_csv("../Sources/data_clean.csv", sep=',', low_memory=False)
-    # data.fillna("NoData", inplace=True)  # Replace the null value by a string "NoData"
+    # # data.fillna("NoData", inplace=True)  # Replace the null value by a string "NoData"
     # df = pandas.DataFrame(data)
     # df = df.drop_duplicates(subset=["Date", "From", "To", "content"], keep="first", ignore_index=True)
     # processing_mail.get_words_content(df)
     # print("Content done")
     # df.to_csv("../Sources/data_clean.csv", index=False)
-    # nltk.download('stopwords')
-    # nltk.download('punkt')
+    nltk.download('stopwords')
+    nltk.download('punkt')
+    nltk.download('averaged_perceptron_tagger')
+    nltk.download('universal_tagset')
     # print(modification_ntlk("Nick frightened, likes, to > frightens play football, <however -- he - is : / not too frightening fond of tennis."))
     # processing_mail.get_words_subject(df)
     # stop_words = stopwords.words('english') + [",", ";", ":", ".", "?", "!", "«", "»", "(", ")", "\"", "…", "'", "-", "’"]
@@ -93,12 +96,12 @@ if __name__ == '__main__':
 
 
     # a_file = open("../Generated Data/link_mail1.json", "w")
-    # json.dump(link_mail.get_link_mails(df), a_file, indent=4)
+    # json.dump(link_mail.get_link_mails(df), a_file, indent=4,sort_keys=True)
     # a_file.close()
 
-    # with open("../Generated Data/link_mail1.json") as f:
-    #     data = json.loads(f.read())
-    #     print(json.dumps(data, indent=4, sort_keys=True))
+    with open("../Generated Data/link_mail1.json") as f:
+        data = json.loads(f.read())
+        print(get_discussion_themes(data))
 
     #print(link_mail.get_link_mails(df))
 
@@ -109,6 +112,6 @@ if __name__ == '__main__':
     # second_word = wordnet.synset("Energy.n.01")
     # print('Similarity: ' + str(first_word.wup_similarity(second_word)))
 
-    get_themes.get_similarity_of_text("During the American Revolution, George Washington worked to contain a smallpox epidemic by isolating anyone suspected of infection and limiting outside contact with his army. In 1776, when the British withdrew from Boston, Washington mandated that only soldiers that had already been infected be allowed into the city.")
+    #get_themes.get_mail_themes("During the American Revolution, George Washington worked to contain a smallpox epidemic by isolating anyone suspected of infection and limiting outside contact with his army. In 1776, when the British withdrew from Boston, Washington mandated that only soldiers that had already been infected be allowed into the city.")
 
 
