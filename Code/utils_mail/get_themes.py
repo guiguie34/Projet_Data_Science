@@ -54,7 +54,6 @@ def get_discussion_themes(dict):
     for sujet,mails in dict.items():
         for k,v in mails.items():
             themes=get_one_discussion_themes(v)
-            #TODO: temps de reponse de la conversation
             temps_echange = processing_mail.transform_time_mail(v)
             for couple in themes:
                 if couple[0] in dataForANOVA:
@@ -91,8 +90,8 @@ def get_similarity_of_text(text):
     edited_text=[]
     for i in range (0,len(newText)):
         edited_text.append(get_similarity_of_word(newText[i]))
-    print("old : ",newText)
-    print("new : ",edited_text)
+    #print("old : ",newText)
+    #print("new : ",edited_text)
     return edited_text
 
 #return the most similar word for a specific word

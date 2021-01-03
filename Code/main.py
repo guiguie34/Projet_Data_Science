@@ -58,10 +58,10 @@ def csv_to_json(data):
 
 if __name__ == '__main__':
     #
-    # data = pandas.read_csv("../Sources/data_clean.csv", sep=',', low_memory=False)
+    data = pandas.read_csv("../Sources/data_clean.csv", sep=',', low_memory=False)
     # # data.fillna("NoData", inplace=True)  # Replace the null value by a string "NoData"
-    # df = pandas.DataFrame(data)
-    # df = df.drop_duplicates(subset=["Date", "From", "To", "content"], keep="first", ignore_index=True)
+    df = pandas.DataFrame(data)
+    df = df.drop_duplicates(subset=["Date", "From", "To", "content"], keep="first", ignore_index=True)
     # processing_mail.get_words_content(df)
     # print("Content done")
     # df.to_csv("../Sources/data_clean.csv", index=False)
@@ -95,13 +95,62 @@ if __name__ == '__main__':
      #a_file.close()
 
 
-    # a_file = open("../Generated Data/link_mail1.json", "w")
+    # a_file = open("../Generated Data/link_mail6.json", "w")
     # json.dump(link_mail.get_link_mails(df), a_file, indent=4,sort_keys=True)
     # a_file.close()
 
-    with open("../Generated Data/link_mail1.json") as f:
-        data = json.loads(f.read())
-        print(get_discussion_themes(data))
+    # with open("../Generated Data/link_mail1.json") as a:
+    #     data1 = json.loads(a.read())
+    #     with open("../Generated Data/link_mail2.json") as b:
+    #         data2 = json.loads(b.read())
+    #         with open("../Generated Data/link_mail3.json") as c:
+    #             data3 = json.loads(c.read())
+    #             with open("../Generated Data/link_mail4.json") as d:
+    #                 data4 = json.loads(d.read())
+    #                 with open("../Generated Data/link_mail5.json") as e:
+    #                     data5 = json.loads(e.read())
+    #                     with open("../Generated Data/link_mail6.json") as f:
+    #                         data6 = json.loads(f.read())
+    #
+    #                         anova_file = open("../Generated Data/dataForAnova.json", "w")
+    #                         merged = {**data1, **data2,**data3,**data4,**data5,**data6}
+    #                         json.dump(get_discussion_themes(merged),anova_file,indent=4,sort_keys=True)
+    #                         anova_file.close()
+
+    # def clean_nones(value):
+    #     """
+    #     Recursively remove all None values from dictionaries and lists, and returns
+    #     the result as a new dictionary or list.
+    #     """
+    #     if isinstance(value, list):
+    #         return [clean_nones(x) for x in value if x]
+    #     elif isinstance(value, dict):
+    #         return {
+    #             key: clean_nones(val)
+    #             for key, val in value.items()
+    #             if val
+    #         }
+    #     else:
+    #         return value
+    #
+    # with open("../Generated Data/dataForAnova3.json") as a:
+    #     data1 = json.loads(a.read())
+    #     data1= clean_nones(data1)
+    #     anova_file = open("../Generated Data/dataForAnova4.json", "w")
+    #     json.dump(data1,anova_file,indent=4,sort_keys=True)
+
+    with open("../Generated Data/dataForAnova4.json") as a:
+        data1 = json.loads(a.read())
+        empty_keys = [k for k, v in data1.items() if not v]
+        for k in empty_keys:
+            del data1[k]
+        anova_file = open("../Generated Data/dataForAnova5.json", "w")
+        json.dump(data1,anova_file,indent=4,sort_keys=True)
+
+    # with open("../Generated Data/link_mail1.json") as f:
+    #     data = json.loads(f.read())
+    #     anova_file = open("../Generated Data/dataForAnova.json", "w")
+    #     json.dump(get_discussion_themes(data),anova_file,indent=4,sort_keys=True);
 
     #print(link_mail.get_link_mails(df))
 

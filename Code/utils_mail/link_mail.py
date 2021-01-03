@@ -10,16 +10,14 @@ def clean_subject_regex(subject):
 
 def get_link_mails(df):
     subject_mail = {}
-    #for i in range(200, 300):
+    for i in range(50001, len(df)):
+        subject = df["Subject"][i]
+        clean_subject = clean_subject_regex(subject)
+        if (clean_subject != "NoData" and clean_subject != "") and clean_subject not in subject_mail:
+            relatedmail = get_all_mails_by_subject(df, clean_subject)  # Mails qui appartiennent aux même sujets
+            relatedmail2 = dispatch_mails(relatedmail)  # Mails sous forme de conversations
+            subject_mail[clean_subject] = relatedmail2
 
-    #subject = df["Subject"][i]
-    clean_subject = clean_subject_regex("Re: Western Wholesale Activities - Gas & Power Conf. Call")
-    if (clean_subject != "NoData" and clean_subject != "") and clean_subject not in subject_mail:
-        relatedmail = get_all_mails_by_subject(df, clean_subject)  # Mails qui appartiennent aux même sujets
-        relatedmail2 = dispatch_mails(relatedmail)  # Mails sous forme de conversations
-        #relatedmail2 = sorted(relatedmail2, key=lambda k: k['Date'])
-        subject_mail[clean_subject] = relatedmail2
-    print(subject_mail)
 
     return subject_mail
 
