@@ -4,12 +4,13 @@ import numpy as np
 import pandas as pd
 
 # load data file
-with open("Generated Data/dataForAnova5.json") as f:
+with open("../../Generated Data/dataForAnova5.json") as f:
     data = json.load(f)
     df = pd.DataFrame(dict([(k, pd.Series(v)) for k, v in data.items()]))
     print(df.head(n=10))
-    df = pd.melt(df,value_vars=list(df.columns),var_name='theme', value_name='time')
+    df = pd.melt(df,value_vars=list(df.columns), var_name='theme', value_name='time')
     print(df.head(n=10))
+
 
 # # reshape the d dataframe suitable for statsmodels package
 # df_melt = pd.melt(df.reset_index(), id_vars=['index'], value_vars=df.item())
@@ -28,7 +29,7 @@ import scipy.stats as stats
 # df.dropna(axis = 0, how = 'any')
 # print(df)
 df = df[df['time'].notna()]
-df.to_csv("Generated Data/dataForAnova6.csv",header=True,index=True)
+df.to_csv("../../Generated Data/dataForAnova6.csv", header=True, index=True)
 df.info()
 #df[1] = df[1].astype('float', errors='ignore')
 ax = sns.boxplot(x='theme', y='time', data=df, color='#99c2a2')
