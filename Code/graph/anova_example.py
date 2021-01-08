@@ -35,7 +35,7 @@ for index, row in df.iterrows():
     df.at[index,'time'] = row["time"]/86400
 time_filter = df['time']<182.5
 df=df[time_filter]
-#df = df[df['theme'].map(df['theme'].value_counts()) > 2]
+df = df[df['theme'].map(df['theme'].value_counts()) > 2]
 
 # number_filter= df['theme'].count()>3
 # df=df[number_filter]

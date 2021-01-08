@@ -48,10 +48,12 @@ def csv_to_json(data):
         jsonfile.write('\n')
 
 
-def get_df_from_csv(n = None):
-    ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    data = pandas.read_csv("../../Sources/data_clean.csv", sep=',', low_memory=False, nrows=n,)
+def get_df_from_csv(n = None,colonne=None):
+    data = pandas.read_csv("../../Sources/data_clean.csv", sep=',', low_memory=False, nrows=n)
     # # data.fillna("NoData", inplace=True)  # Replace the null value by a string "NoData"
     df = pandas.DataFrame(data)
+
     df = df.drop_duplicates(subset=["Date", "From", "To", "content"], keep="first", ignore_index=True)
+    if colonne is not None:
+        df = df[colonne]
     return df
