@@ -9,7 +9,7 @@ import plotly.express as px
 
 def load_data():
     # load data file
-    with open("../../Generated Data/dataForAnova5.json") as f:
+    with open("Generated Data/dataForAnova5.json") as f:
         data = json.load(f)
         df = pd.DataFrame(dict([(k, pd.Series(v)) for k, v in data.items()]))
         df = pd.melt(df, value_vars=list(df.columns), var_name='theme', value_name='time')
