@@ -5,17 +5,20 @@ from nltk.corpus import stopwords
 from Code.utils_mail import processing_mail
 from Code.utils_mail import link_mail
 import numpy as np
-import operator
-
+from pathlib import Path
+import os.path
+import sys
 
 
 global themes
-jsonfile = open('../Generated Data/data_themes.json', 'r')
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+dirname = ROOT+"/../Generated Data/data_themes.json"
+jsonfile = open(dirname, 'r')
 themes = json.load(jsonfile)
 
 def get_general_words():
     general_words = {}
-    jsonfile = open('../Generated Data/data_content.json', 'r')
+    jsonfile = open(ROOT+'/../Generated Data/data_content.json', 'r')
     data = json.load(jsonfile)
     for i in range(len(data)-1, 0, -1):
         # regarder s'il se trouve dans les synonyme existant

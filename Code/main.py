@@ -16,52 +16,16 @@ from Code.utils_mail import get_themes
 #nltk.download('wordnet')
 #nltk.download('universal_tagset')
 from Code.utils_mail.get_themes import get_discussion_themes
-
-'''maxInt = sys.maxsize
-
-while True:
-    # decrease the maxInt value by factor 10
-    # as long as the OverflowError occurs.
-    try:
-        csv.field_size_limit(maxInt)
-        break
-    except OverflowError:
-        maxInt = int(maxInt / 10)
-'''
-
-
-def csv_to_json(data):
-    jsonfile = open('../Generated Data/data.json', 'w')
-    reader = csv.reader(data)
-    fieldnames = []
-    for row in reader:
-        fieldnames.append(row[0])
-    fieldnames = fieldnames[0:15]
-    csvfile = open('../Sources/data.csv', 'r')
-    reader2 = csv.DictReader(csvfile, fieldnames)
-    next(reader2)
-    next(reader2)
-
-    for row in reader2:
-        # print(row)
-        json.dump(row, jsonfile)
-        jsonfile.write('\n')
+from Code.utils_mail import utils
 
 
 
 
-
-# TODO Objet --> Calculer le temps de réponse par rapport aux mails récupérés
-# TODO Thématique --> Déterminier une thématique par rapport aux mots présent dans le mails (enlever stop words)
-# TODO FilterData --> Trouver les mails avec des réponses que l'on peut exploiter
 
 
 if __name__ == '__main__':
     #
-    data = pandas.read_csv("../Sources/data_clean.csv", sep=',', low_memory=False)
-    # # data.fillna("NoData", inplace=True)  # Replace the null value by a string "NoData"
-    df = pandas.DataFrame(data)
-    df = df.drop_duplicates(subset=["Date", "From", "To", "content"], keep="first", ignore_index=True)
+    df = utils.get_df_from_csv()
     # processing_mail.get_words_content(df)
     # print("Content done")
     # df.to_csv("../Sources/data_clean.csv", index=False)
