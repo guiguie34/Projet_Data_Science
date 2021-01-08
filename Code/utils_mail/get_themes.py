@@ -58,6 +58,8 @@ def get_discussion_themes(dict):
         for k,v in mails.items():
             themes=get_one_discussion_themes(v)
             temps_echange = processing_mail.transform_time_mail(v)
+            if temps_echange is not None and temps_echange > 10000000:
+                print(v)
             for couple in themes:
                 if couple[0] in dataForANOVA:
                     dataForANOVA[couple[0]] += [temps_echange]

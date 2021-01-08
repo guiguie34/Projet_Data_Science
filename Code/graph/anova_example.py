@@ -4,13 +4,15 @@ import numpy as np
 import pandas as pd
 
 # load data file
-with open("../../Generated Data/dataForAnova5.json") as f:
+from statsmodels.stats.multicomp import pairwise_tukeyhsd
+
+with open("Generated Data/dataForAnova5.json") as f:
     data = json.load(f)
     df = pd.DataFrame(dict([(k, pd.Series(v)) for k, v in data.items()]))
-    print(df.head(n=10))
-    df = pd.melt(df,value_vars=list(df.columns), var_name='theme', value_name='time')
-    print(df.head(n=10))
+    #print(df.head(n=10))
+    df = pd.melt(df,value_vars=list(df.columns),var_name='theme', value_name='time')
 
+    #print(df.head(n=10))
 
 # # reshape the d dataframe suitable for statsmodels package
 # df_melt = pd.melt(df.reset_index(), id_vars=['index'], value_vars=df.item())
@@ -29,8 +31,17 @@ import scipy.stats as stats
 # df.dropna(axis = 0, how = 'any')
 # print(df)
 df = df[df['time'].notna()]
-df.to_csv("../../Generated Data/dataForAnova6.csv", header=True, index=True)
-df.info()
+for index, row in df.iterrows():
+    df.at[index,'time'] = row["time"]/86400
+time_filter = df['time']<182.5
+df=df[time_filter]
+#df = df[df['theme'].map(df['theme'].value_counts()) > 2]
+
+# number_filter= df['theme'].count()>3
+# df=df[number_filter]
+print(df)
+# df.to_csv("Generated Data/dataForAnova6.csv",header=True,index=True)
+# df.info()
 #df[1] = df[1].astype('float', errors='ignore')
 ax = sns.boxplot(x='theme', y='time', data=df, color='#99c2a2')
 #ax = sns.swarmplot(x="theme", y="time", data=df, color='#7d0013')
@@ -61,6 +72,17 @@ from statsmodels.formula.api import ols
 model = ols('time ~ C(theme)', data=df).fit()
 anova_table = sm.stats.anova_lm(model, typ=2)
 print(anova_table)
+
+tukey = pairwise_tukeyhsd(endog=df['time'],
+                          groups=df['theme'],
+                          alpha=0.05)
+
+f = open("tukey.txt", "w")
+f.write(str(tukey))
+f.close()
+#display results
+#print(tukey)
+
 
 # from scipy.stats import bartlett
 # #print(df.groupby('theme').count())
