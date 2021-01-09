@@ -35,11 +35,17 @@ for index, row in df.iterrows():
     df.at[index,'time'] = row["time"]/86400
 time_filter = df['time']<182.5
 df=df[time_filter]
-df = df[df['theme'].map(df['theme'].value_counts()) > 2]
+df = df[df['theme'].map(df['theme'].value_counts()) > 100]
 
 # number_filter= df['theme'].count()>3
 # df=df[number_filter]
-print(df)
+sns.barplot(data=df, x='theme', y='time')
+plt.xticks(rotation=90)
+plt.ylim(0, 50)
+plt.title("Temps de réponse moyen pour les thèmes les plus fréquents (>100) issus des conversations",fontsize=9)
+plt.ylabel("time (en jours)")
+plt.show()
+#print((df.groupby(['theme']).mean()).plot().bar(x='theme', y='time'))
 # df.to_csv("Generated Data/dataForAnova6.csv",header=True,index=True)
 # df.info()
 #df[1] = df[1].astype('float', errors='ignore')
