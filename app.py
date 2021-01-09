@@ -1,63 +1,84 @@
+# -*- coding: utf-8 -*-
+
+# Run this app with `python app.py` and
+# visit http://127.0.0.1:8050/ in your web browser.
+
+import dash_table
+from Code.graph import anova
+from Code.utils_mail import utils
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
-import plotly.graph_objs as go
+from dash.dependencies import Input, Output
 
-########### Define your variables
-beers=['Chesapeake Stout', 'Snake Dog IPA', 'Imperial Porter', 'Double Dog IPA']
-ibu_values=[35, 60, 85, 75]
-abv_values=[5.4, 7.1, 9.2, 4.3]
-color1='darkred'
-color2='orange'
-mytitle='Beer Comparison'
-tabtitle='beer!'
-myheading='Flying Dog Beers'
-label1='IBU'
-label2='ABV'
-githublink='https://github.com/austinlasseter/flying-dog-beers'
-sourceurl='https://www.flyingdog.com/beers/'
+import pandas as pd
 
-########### Set up the chart
-bitterness = go.Bar(
-    x=beers,
-    y=ibu_values,
-    name=label1,
-    marker={'color':color1}
-)
-alcohol = go.Bar(
-    x=beers,
-    y=abv_values,
-    name=label2,
-    marker={'color':color2}
-)
-
-beer_data = [bitterness, alcohol]
-beer_layout = go.Layout(
-    barmode='group',
-    title = mytitle
-)
-
-beer_fig = go.Figure(data=beer_data, layout=beer_layout)
-
-
-########### Initiate the app
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
-server = app.server
-app.title=tabtitle
 
-########### Set up the layout
+app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+
+#Fonctions pour charger les donénes
+df_mail = utils.get_df_from_csv(10,["Date", "From", "To","Subject"])#TODO mieux presentr le tableau
+df_anova = anova.load_data(number_head=5)
+df_all_data = anova.load_data()
+fig = anova.box_plot(df_all_data)
+anova_table = anova.anova_table(df_all_data)
+
+#Text du site
+presentation_site = '''
+# Présentation du projet
+Cette page présente ce que nous avons réalisé ddurant notre projet DataScience
+...
+'''
+presentation_donnee = '''
+## Présentation des donnés
+Ici un extrait des données de base que nous disposions : 
+'''
+
 app.layout = html.Div(children=[
-    html.H1(myheading),
-    dcc.Graph(
-        id='flyingdog',
-        figure=beer_fig
-    ),
-    html.A('Code on Github', href=githublink),
-    html.Br(),
-    html.A('Data Source', href=sourceurl),
-    ]
+    dcc.Markdown(children=presentation_site),
+    dcc.Markdown(children=presentation_donnee),
+    html.Div(children=dash_table.DataTable(
+        id='table_mail',
+        columns=[{"name": i, "id": i} for i in df_mail.columns],
+        data=df_mail.to_dict('records'),
+    )),
+    dcc.Markdown(children=presentation_site),
+    html.Div(children=dash_table.DataTable(
+        id='data_anova',
+        columns=[{"name": i, "id": i} for i in df_anova.columns],
+        data=df_anova.to_dict('records'),
+    )),
+    html.Div([
+        dcc.Graph(
+            id='box-plot',
+            figure=fig
+        ),
+        dcc.RangeSlider(
+            id='range-slider',
+            min=0,
+            max=df_all_data["theme"].count(),
+            step=1,
+            value=[0, df_all_data["theme"].count()],
+        ),
+        html.Div(id='slider-output-container')
+    ]),
+    html.Div(children=dash_table.DataTable(
+        id='table_anova',
+        columns=[{"name": i, "id": i} for i in anova_table.columns],
+        data=anova_table.to_dict('records'),
+    )),
+
+])
+
+@app.callback(
+    Output('box-plot', 'figure'),
+    Input('range-slider', 'value')
 )
+
+def update_graph(number):
+    fig = anova.box_plot(anova.load_data(number[0], number[1]))
+    return fig
 
 if __name__ == '__main__':
     app.run_server()
