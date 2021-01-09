@@ -19,7 +19,7 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
 #Fonctions pour charger les donénes
 # df_mail = utils.get_df_from_csv("data_clean_sample.csv",10,["Date", "From", "To","Subject"])#TODO mieux presentr le tableau
-df_anova = anova.load_data(number_head=5)
+# df_anova = anova.load_data(number_head=5)
 # df_all_data = anova.load_data()
 # fig = anova.box_plot(df_all_data)
 # anova_table = anova.anova_table(df_all_data)
@@ -43,12 +43,12 @@ app.layout = html.Div(children=[
     #     columns=[{"name": i, "id": i} for i in df_mail.columns],
     #     data=df_mail.to_dict('records'),
     # )),
-    dcc.Markdown(children=presentation_site),
-    html.Div(children=dash_table.DataTable(
-        id='data_anova',
-        columns=[{"name": i, "id": i} for i in df_anova.columns],
-        data=df_anova.to_dict('records'),
-    )),
+    # dcc.Markdown(children=presentation_site),
+    # html.Div(children=dash_table.DataTable(
+    #     id='data_anova',
+    #     columns=[{"name": i, "id": i} for i in df_anova.columns],
+    #     data=df_anova.to_dict('records'),
+    # )),
     # html.Div([
     #     dcc.Graph(
     #         id='box-plot',
@@ -71,14 +71,14 @@ app.layout = html.Div(children=[
 
 ])
 
-@app.callback(
-    Output('box-plot', 'figure'),
-    Input('range-slider', 'value')
-)
-
-def update_graph(number):
-    fig = anova.box_plot(anova.load_data(number[0], number[1]))
-    return fig
+# @app.callback(
+#     Output('box-plot', 'figure'),
+#     Input('range-slider', 'value')
+# )
+#
+# def update_graph(number):
+#     fig = anova.box_plot(anova.load_data(number[0], number[1]))
+#     return fig
 
 if __name__ == '__main__':
     app.run_server()
