@@ -20,9 +20,9 @@ server = app.server
 #Fonctions pour charger les donénes
 df_mail = utils.get_df_from_csv("data_clean_sample.csv",10,["Date", "From", "To","Subject"])#TODO mieux presentr le tableau
 df_anova = anova.load_data(number_head=5)
-df_all_data = anova.load_data()
-fig = anova.box_plot(df_all_data)
-anova_table = anova.anova_table(df_all_data)
+#df_all_data = anova.load_data()
+fig = anova.box_plot(df_anova)
+#anova_table = anova.anova_table(df_all_data)
 
 #Text du site
 presentation_site = '''
@@ -57,17 +57,17 @@ app.layout = html.Div(children=[
         dcc.RangeSlider(
             id='range-slider',
             min=0,
-            max=df_all_data["theme"].count(),
+            max=df_anova["theme"].count(),
             step=1,
-            value=[0, df_all_data["theme"].count()],
+            value=[0, df_anova["theme"].count()],
         ),
         html.Div(id='slider-output-container')
     ]),
-    html.Div(children=dash_table.DataTable(
-        id='table_anova',
-        columns=[{"name": i, "id": i} for i in anova_table.columns],
-        data=anova_table.to_dict('records'),
-    )),
+    # html.Div(children=dash_table.DataTable(
+    #     id='table_anova',
+    #     columns=[{"name": i, "id": i} for i in anova_table.columns],
+    #     data=anova_table.to_dict('records'),
+    # )),
 
 ])
 
