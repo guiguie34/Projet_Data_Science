@@ -48,9 +48,9 @@ def csv_to_json(data):
         jsonfile.write('\n')
 
 
-def get_df_from_csv(n = None,colonne=None):
+def get_df_from_csv(name = "data_clean.csv",n = None,colonne=None):
     ROOT_DIR = os.path.dirname(os.path.abspath("app.py"))
-    data = pandas.read_csv(ROOT_DIR+"/Sources/data_clean.csv", sep=',', low_memory=False, nrows=n)
+    data = pandas.read_csv(ROOT_DIR+"/Sources/"+name, sep=',', low_memory=False, nrows=n)
     # # data.fillna("NoData", inplace=True)  # Replace the null value by a string "NoData"
     df = pandas.DataFrame(data)
 
