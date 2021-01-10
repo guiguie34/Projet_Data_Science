@@ -43,8 +43,14 @@ sns.barplot(data=df, x='theme', y='time')
 plt.xticks(rotation=90)
 plt.ylim(0, 50)
 plt.title("Temps de réponse moyen pour les thèmes les plus fréquents (>100) issus des conversations",fontsize=9)
-plt.ylabel("time (en jours)")
+plt.ylabel("Temps (en jours)")
 plt.show()
+
+grouped_df = df.groupby("theme")
+mean_df = grouped_df.mean()
+mean_df = mean_df.reset_index()
+print(mean_df)
+#print(df.groupby(['theme'])['time'].mean().to_frame())
 #print((df.groupby(['theme']).mean()).plot().bar(x='theme', y='time'))
 # df.to_csv("Generated Data/dataForAnova6.csv",header=True,index=True)
 # df.info()
@@ -83,9 +89,9 @@ tukey = pairwise_tukeyhsd(endog=df['time'],
                           groups=df['theme'],
                           alpha=0.05)
 
-f = open("tukey.txt", "w")
-f.write(str(tukey))
-f.close()
+# f = open("tukey_filter.txt", "w")
+# f.write(str(tukey))
+# f.close()
 #display results
 #print(tukey)
 
